@@ -1,0 +1,3 @@
+local modslist = {}
+
+return modlist
