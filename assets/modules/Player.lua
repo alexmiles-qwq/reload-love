@@ -1,10 +1,14 @@
+-- [ Modules ]
+
 local utils = require "assets/modules/utils"
-local anim8 = require "assets/modules/anim8/anim8"
+local anim8 = require "assets/modules/anim8/anim8"      -- Anim8 cool thing :p
 
 local Player = {}
-Player.WalkSpeed = 100
+Player.WalkSpeed = 125
 Player.Direction = "Down" -- Up Left Right
-Player.Scale = 3
+Player.Scale = 2
+
+Player.CanMoving = true
 
 Player.Debug = true
 
@@ -26,16 +30,17 @@ Player.Grids = {
 }   
 
 Player.AnimationSpeed = 0.25
-
 Player.Animations = {
-    WalkUp = anim8.newAnimation(Player.Grids.WalkUp('1-4', 1), Player.AnimationSpeed or 0.15),
-    WalkDown = anim8.newAnimation(Player.Grids.WalkDown('1-4', 1), Player.AnimationSpeed or 0.15),
-    WalkLeft = anim8.newAnimation(Player.Grids.WalkLeft('1-4', 1), Player.AnimationSpeed or 0.15),
-    WalkRight = anim8.newAnimation(Player.Grids.WalkRight('1-4', 1), Player.AnimationSpeed or 0.15),
+    WalkUp = anim8.newAnimation(Player.Grids.WalkUp('1-4', 1), Player.AnimationSpeed),
+    WalkDown = anim8.newAnimation(Player.Grids.WalkDown('1-4', 1), Player.AnimationSpeed),
+    WalkLeft = anim8.newAnimation(Player.Grids.WalkLeft('1-4', 1), Player.AnimationSpeed),
+    WalkRight = anim8.newAnimation(Player.Grids.WalkRight('1-4', 1), Player.AnimationSpeed),
 }
 
 Player.CurrentAnimation = Player.Animations.WalkDown
 
+Player.CanRun = true
+Player.Running = false
 
 function Player:SetPosition(XV, YV)
     self.Position.X = XV
@@ -70,36 +75,48 @@ function Player:Update(dt)
 
 
     -- Walk left and right
+    if Player.CanMoving then
+        if love.keyboard.isDown("lshift") and self.CanRun then
+            self.WalkSpeed = 275
+            self.AnimationSpeed = 1 * 1.5
+        else
+            self.WalkSpeed = 125
+            self.AnimationSpeed = 1
+        end
+    
+        --Player:RecalcAnimationSpeed()
+    
+        if love.keyboard.isDown("left") then
+            X = X - 1 * self.WalkSpeed * dt
+            Player:SetDirection("Left")
+            isMoving = true
+        end
+    
+        if love.keyboard.isDown("right") then
+            X = X + 1 * self.WalkSpeed * dt
+            Player:SetDirection("Right")
+            isMoving = true
+        end
+    
+        -- Walk up and down
+    
+        if love.keyboard.isDown("up") then
+            Y = Y - 1 * self.WalkSpeed * dt 
+            Player:SetDirection("Up")
+            isMoving = true
+        end
+    
+        if love.keyboard.isDown("down") then
+            Y = Y + 1 * self.WalkSpeed * dt
+            Player:SetDirection("Down")
+            isMoving = true
+        end
 
-    if love.keyboard.isDown("left") then
-        X = X - 1 * self.WalkSpeed * dt
-        Player:SetDirection("Left")
-        isMoving = true
-    end
-
-    if love.keyboard.isDown("right") then
-        X = X + 1 * self.WalkSpeed * dt
-        Player:SetDirection("Right")
-        isMoving = true
-    end
-
-    -- Walk up and down
-
-    if love.keyboard.isDown("up") then
-        Y = Y - 1 * self.WalkSpeed * dt 
-        Player:SetDirection("Up")
-        isMoving = true
-    end
-
-    if love.keyboard.isDown("down") then
-        Y = Y + 1 * self.WalkSpeed * dt
-        Player:SetDirection("Down")
-        isMoving = true
     end
 
     Player:SetPosition(X, Y)
 
-    Player.CurrentAnimation:update(dt)
+    Player.CurrentAnimation:update(dt * self.AnimationSpeed)
 
     if not isMoving then
         Player.CurrentAnimation:gotoFrame(1)
@@ -124,7 +141,7 @@ function Player:Draw()
     self.CurrentAnimation:draw(Texture, self.Position.X, self.Position.Y, nil, self.Scale, self.Scale)
 
     if self.Debug then
-        love.graphics.print("Direction = ".. tostring(self.Direction))
+        love.graphics.print("Direction = ".. tostring(self.Direction) .. " AnimationSpeed = " .. tostring(self.AnimationSpeed))
     end
 
     
