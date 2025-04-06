@@ -84,8 +84,6 @@ function Player:Update(dt)
             self.AnimationSpeed = 1
         end
     
-        --Player:RecalcAnimationSpeed()
-    
         if love.keyboard.isDown("left") then
             X = X - 1 * self.WalkSpeed * dt
             Player:SetDirection("Left")
