@@ -1,72 +1,57 @@
 
+local push = require("libs.push")
+require('Engine.core')
+
+local VERSION = 0.02
+
+local PW, PH = love.window.getDesktopDimensions()
+local PW, PH = PW * 0.8, PH * 0.8
+
+local TweenService = game.TweenService
+
 
 function love.load()
    
+   
+    love.graphics.setDefaultFilter('nearest','nearest')
 
+    workspace.Player = Instance.new("Player")
+    workspace.Player.Position.X = 100
+    workspace.Camera:SetSubject(workspace.Player)
+--[[
+    TestTween = TweenService:Create(workspace.Player, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Position = {X = 100, Y = 200}})
+    TestTween:Play()
+]]
     -- [ LOVE ]
-    love.window.setTitle("Re:Load")
+    love.window.setTitle("Re:Load ver. "..tostring(VEwRSION))
     love.graphics.setDefaultFilter("nearest", "nearest")
+    push:setupScreen(game.VW, game.VH, PW, PH, {fullscreen = false, vsync = true, resizable = true})
 
-    req = require "assets/modules/loadModule"
-    --Player = require "assets/modules/Player"
-    Player = req("assets/modules/Player")
-    DialogueMod = req("assets/modules/Dialogue")
-
-    OnUpdateFunctions = {}
-
-    function BindOnUpdate(name, f)
-        OnUpdateFunctions[name] = f
-    end
-
-    function UnBindOnUpdate(name)
-        if OnUpdateFunctions[name] then OnUpdateFunctions[name] = nil end
-    end
-
-    fullscreen = false
-
-    boxmod = req("assets/modules/box")
-    testbox = boxmod.new()
-
-
-    ModLoader = require "assets/modules/ModLoader"
-    ModLoader:Load()
 
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if key == "escape" then
-       love.event.quit()
-    end
-
-    if key == "f11" then
-        fullscreen = not fullscreen
-        love.window.setFullscreen(fullscreen, "exclusive")
-    end
-
-
-
-
-    DialogueMod.keypressed(key, scancode, isrepeat)
- end
-
-function love.update(dt)
-
-    
-    Player:Update(dt)
-    DialogueMod:update(dt, Player)
-
-   --l love.window.setTitle(tostring(Player.Direction))
-    for i, func in pairs(OnUpdateFunctions) do
-        func(dt)
-    end
-
-
-    
 end
 
-function love.draw()
-    testbox:draw()
-    Player:Draw()
+function love.update(dt)
+    game:Update(dt)
+end
 
-    DialogueMod:draw()
+function love.resize(w, h)
+    push:resize(w, h)
+end
+
+
+function love.draw()
+    push:start()
+
+    workspace.Camera:Apply() 
+
+    game:Draw()               
+
+    workspace.Camera:Draw()   
+
+    workspace.Camera:Unapply()
+
+    push:finish()
 end

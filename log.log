@@ -1,0 +1,9 @@
+[0]: Session started! 
+[0.144]: PLAYER AFTER SET DEFAULT CURRENT ANIM: function: 0x021cdcfe74e8 
+[0.721]: UPDATE - Before CurrentAnimation:update. Draw method: function: 0x021cdcfe74e8 
+[0.821]: UPDATE - after CurrentAnimation:update. Draw method: function: 0x021cdcfe74e8 
+[0.905]: UPDATE - before CurrentAnimation:gotoFrame. Draw method: function: 0x021cdcfe74e8 
+[0.98]: UPDATE - after CurrentAnimation:gotoFrame. Draw method: function: 0x021cdcfe74e8 
+[1.059]: PLAYER UPDATE (end of function): nil 
+[1.145]: PLAYER DRAW START: nil 
+[1.229]: PLAYER DRAW AFTER TEXTURE CHANGED: nil 

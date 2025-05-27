@@ -1,5 +1,5 @@
 local logger = {}
-logger.OnLoadMessage = false
+logger.OnLoadMessage = true
 logger.initTime = os.clock()
 
 function logger.log(text, prefix) -- add prefix later
